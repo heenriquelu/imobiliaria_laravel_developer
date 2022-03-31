@@ -3,8 +3,10 @@
 namespace LaraDev\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use LaraDev\Http\Controllers\Controller;
 use LaraDev\Http\Requests\Admin\User as UserRequest;
+use LaraDev\Support\Cropper;
 use LaraDev\User;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -28,7 +30,10 @@ class UserController extends Controller
 
     public function team()
     {
-        return view('admin.users.team');
+        $users = User::where('admin', 1)->get();
+        return view('admin.users.team', [
+            'users' => $users
+        ]);
     }
 
     /**
@@ -50,6 +55,11 @@ class UserController extends Controller
     public function store(UserRequest $request)
     {
         $userCreate = User::create($request->all());
+
+        if (!empty($request->file('cover'))) {
+            $userCreate->cover = $request->file('cover')->store('user');
+            $userCreate->save();
+        }
 
         Alert::success('Cliente cadastrado', 'O cliente foi cadastrado com sucesso!');
 
@@ -97,12 +107,27 @@ class UserController extends Controller
         $user->setLesseeAttribute($request->lessee);
         $user->setAdminAttribute($request->admin);
         $user->setClientAttribute($request->client);
+
+        if (!empty($request->file('cover'))) {
+            Storage::delete($user->cover);
+            Cropper::flush($user->cover);
+            $user->cover = '';
+        }
+
         $user->fill($request->all());
+
+        if (!empty($request->file('cover'))) {
+            $user->cover = $request->file('cover')->store('user');
+        }
+        if (!$user->save()) {
+            return redirect()->back()->withInput()->withErrors();
+        }
+
         $user->save();
 
-        Alert::success('Usuario alterado', 'Todos os campos foram alterados com sucesso!');
+        Alert::success('Cliente atualizado', 'Todos os campos foram atualizados com sucesso!');
 
-       return redirect()->route('admin.users.index');
+        return redirect()->route('admin.users.index');
     }
 
     /**

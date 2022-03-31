@@ -5,6 +5,8 @@ namespace LaraDev;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Storage;
+use LaraDev\Support\Cropper;
 
 class User extends Authenticatable
 {
@@ -28,6 +30,7 @@ class User extends Authenticatable
         'date_of_birth',
         'place_of_birth',
         'civil_status',
+        'cover',
         'occupation',
         'income',
         'company_work',
@@ -74,6 +77,14 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function getUrlCoverAttribute()
+    {
+        if (!empty($this->cover)) {
+            return Storage::url(Cropper::thumb($this->cover, 500, 500));
+        }
+        return '';
+    }
+
     public function setLessorAttribute($value)
     {
         $this->attributes['lessor'] = ($value === true || $value === 'on' ? 1 : 0);
@@ -91,7 +102,7 @@ class User extends Authenticatable
 
     public function getDocumentAttribute($value)
     {
-        return substr($value, 0, 3) . '.' . substr($value, 3, 3)  . '.' . substr($value, 6, 3) . '-' . substr($value, 9, 2);
+        return substr($value, 0, 3) . '.' . substr($value, 3, 3) . '.' . substr($value, 6, 3) . '-' . substr($value, 9, 2);
     }
 
     public function setDateOfBirthAttribute($value)
@@ -111,7 +122,7 @@ class User extends Authenticatable
 
     public function getIncomeAttribute($value)
     {
-        return number_format($value,2,',', '.');
+        return number_format($value, 2, ',', '.');
     }
 
     public function setZipcodeAttribute($value)
@@ -141,7 +152,7 @@ class User extends Authenticatable
 
     public function getSpouseDocumentAttribute($value)
     {
-        return substr($value, 0, 3) . '.' . substr($value, 3, 3)  . '.' . substr($value, 6, 3) . '-' . substr($value, 9, 2);
+        return substr($value, 0, 3) . '.' . substr($value, 3, 3) . '.' . substr($value, 6, 3) . '-' . substr($value, 9, 2);
     }
 
     public function setSpouseDateOfBirthAttribute($value)
@@ -161,7 +172,7 @@ class User extends Authenticatable
 
     public function getSpouseIncomeAttribute($value)
     {
-        return number_format($value,2,',', '.');
+        return number_format($value, 2, ',', '.');
     }
 
     public function setAdminAttribute($value)
@@ -176,26 +187,26 @@ class User extends Authenticatable
 
     private function clearField(?string $param)
     {
-       if(empty($param)){
-           return '';
-       }
+        if (empty($param)) {
+            return '';
+        }
 
-       return str_replace(['.', '-', '/', '(', ')', ' '], '', $param);
+        return str_replace(['.', '-', '/', '(', ')', ' '], '', $param);
     }
 
     private function convertStringToDate(?string $param)
     {
-        if(empty($param)){
+        if (empty($param)) {
             return null;
         }
 
         list($day, $month, $year) = explode('/', $param);
-        return (new \DateTime( $year . '-' . $month . '-' . $day))->format('Y-m-d');
+        return (new \DateTime($year . '-' . $month . '-' . $day))->format('Y-m-d');
     }
 
     private function convertStringToDouble(?string $param)
     {
-        if(empty($param)){
+        if (empty($param)) {
             return null;
         }
 

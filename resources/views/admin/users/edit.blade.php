@@ -50,6 +50,7 @@
                       enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
+                    <input type="hidden" name="id" value="{{ $user->id }}">
                     <div class="nav_tabs_content">
                         <div id="data">
                             <div class="label_gc">
@@ -406,7 +407,7 @@
                                         <div class="realty_list">
                                             <div class="realty_list_item mb-1">
                                                 <div class="realty_list_item_actions_stats">
-                                                    <img src="assets/images/realty.jpeg" alt="">
+                                                    <img src="{{ asset('backend/assets/images/realty.jpeg') }}" alt="">
                                                     <ul>
                                                         <li>Venda: R$ 450.000,00</li>
                                                         <li>Aluguel: R$ 2.000,00</li>
