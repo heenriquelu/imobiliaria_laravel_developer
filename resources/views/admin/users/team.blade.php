@@ -31,6 +31,8 @@
                     <div class="info">
                         <p>{{ $user->email }}</p>
                         <p>Desde {{ date('d/m/Y', strtotime($user->created_at)) }}</p>
+                        <p>Ultimo acesso em:</p>
+                        <span>{{ date('d/m/Y H:m:s', strtotime($user->last_login_at)) }}</span>
                     </div>
 
                     <div class="actions">

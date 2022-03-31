@@ -194,6 +194,13 @@ return [
         'company_work' => 'empresa',
         'civil_status' => 'estado civil',
 
+        // Company
+        'user' => 'responsável legal',
+        'social_name' => 'razão social',
+        'alias_name' => 'nome fantasia',
+        'document_company' => 'CNPJ',
+        'document_company_secondary' => 'inscrição estadual',
+
         // Address
         'zipcode' => 'CEP',
         'street' => 'rua',
