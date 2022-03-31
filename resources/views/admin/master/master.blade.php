@@ -99,6 +99,8 @@
 <script src="{{ url(mix('backend/assets/js/libs.js')) }}"></script>
 <script src="{{ url(mix('backend/assets/js/scripts.js')) }}"></script>
 
+@include('sweetalert::alert')
+
 @hasSection('js')
     @yield('js')
 @endif

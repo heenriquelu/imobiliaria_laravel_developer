@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use LaraDev\Http\Controllers\Controller;
 use LaraDev\Http\Requests\Admin\User as UserRequest;
 use LaraDev\User;
+use RealRashid\SweetAlert\Facades\Alert;
 
 
 class UserController extends Controller
@@ -19,6 +20,7 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all();
+
         return view('admin.users.index', [
             'users' => $users
         ]);
@@ -47,8 +49,9 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-
         $userCreate = User::create($request->all());
+
+        Alert::success('Cliente cadastrado', 'O cliente foi cadastrado com sucesso!');
 
         return redirect()->route('admin.users.index');
     }
@@ -96,6 +99,9 @@ class UserController extends Controller
         $user->setClientAttribute($request->client);
         $user->fill($request->all());
         $user->save();
+
+        Alert::success('Usuario alterado', 'Todos os campos foram alterados com sucesso!');
+
        return redirect()->route('admin.users.index');
     }
 
